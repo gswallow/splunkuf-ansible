@@ -3,6 +3,7 @@
 
 - include: install.yml
 - include: security.yml
+- include: deploymentclient.yml
+- include: cloudforwarder.yml
 - include: outputs.yml
 - include: inputs.yml
-- include: deploymentclient.yml
