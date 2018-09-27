@@ -25,8 +25,8 @@ splunkforwarder_pass: changeme
 # SPLUNK CLOUD
 # Set if using Splunk Cloud
 # splunkforwarder_cloud_forwarder: true
-splunkforwarder_cloud_credential_file_src: /tmp/splunkclouduf.spl
-splunkforwarder_cloud_credential_file_dest: "{{ splunkforwarder_path }}/etc/splunkclouduf.spl"
+splunkforwarder_cloud_credential_file_src: /tmp/splunkclouduf-src.spl
+splunkforwarder_cloud_credential_file_dest: /tmp/splunkclouduf.spl
 
 # DEFAULT INDEX
 splunkforwarder_default_index: default
