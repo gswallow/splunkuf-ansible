@@ -23,13 +23,15 @@
     createhome: no 
 
 - name: checking if splunk is installed
-  tags: install
+  tags: 
+    - install
   stat: 
     path: "{{ splunkforwarder_path }}"
   register: splunk_path
 
 - name: splunk is installed
-  tags: install
+  tags: 
+    - install
   debug: 
     msg: "splunk is already installed under {{ splunkforwarder_path }}"
   when: splunk_path.stat.exists
@@ -39,7 +41,8 @@
   when: splunkforwarder_get_via_curl | bool
 
 - name: get splunk binary
-  tags: install
+  tags: 
+    - install
   get_url: 
     url: "{{ splunkforwarder_url }}" 
     dest: "/tmp/{{ splunkforwarder_filename }}"
@@ -47,7 +50,15 @@
     checksum: "{{ splunkforwarder_md5 }}"
   when: splunk_path.stat.exists == false
 
-- name: install splunk binary
+
+- name: checking downloaded file type
+  tags: 
+    - install
+  stat:
+    path: "/tmp/{{ splunkforwarder_filename }}"
+  register: splunk_binary_file
+
+- name: extract splunk binary
   become: yes
   tags:
    - install
@@ -58,7 +69,16 @@
     owner: "{{ splunkforwarder_system_user }}" 
     group: "{{ splunkforwarder_system_user }}" 
     creates: "{{ splunkforwarder_path }}/bin/splunk"
-  when: splunk_path.stat.exists == false
+  when: splunk_path.stat.exists == false and splunk_binary_file.stat.path is search("/(t|\.)gz$/")
+
+- name: install splunk rpm
+  become: yes
+  tags:
+    - install
+  yum:
+    name: "/tmp/{{ splunkforwarder_filename }}"
+    state: latest
+  when: splunk_binary_file.stat.path is search("/rpm$/")
 
 - name: create user.seed file
   become: yes
@@ -72,6 +92,7 @@
       [user_info]
       USERNAME = {{ splunkforwarder_user }}
       PASSWORD = {{ splunkforwarder_pass }}
+
 - name: accept license and start splunk
   tags:
    - install
