@@ -1,0 +1,20 @@
+---
+- name: Copy Splunk Cloud credential file (splunkclouduf.spl)
+  copy:
+    src: "{{ splunkforwarder_cloud_credential_file_src }}"
+    dest: "{{ splunkforwarder_cloud_credential_file_dest }}"
+    owner: "{{ splunkforwarder_system_user }}"
+    group: "{{ splunkforwarder_system_user }}"
+    mode: 0644
+  tags: configure
+  when: splunkforwarder_cloud_forwarder is defined
+
+
+- name: Install Splunk Cloud credentials file
+  shell: "{{ splunkforwarder_path }}/bin/splunk install app {{ splunk_cloud_credential_file_dest }} -auth {{ splunkforwarder_user }}:{{ splunkforwarder_pass }}"
+  args:
+    chdir: /opt/splunkforwarder
+  tags: configure
+  when: splunk_cloud_forwarder is defined
+  notify: restart splunk
+

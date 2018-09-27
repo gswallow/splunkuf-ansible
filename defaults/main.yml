@@ -20,7 +20,13 @@ splunkforwarder_pass: changeme
 
 # DEPLOYMENT SERVER
 # Set if using a Splunk Deployment Server
-# splunkforwarder_deployment_server:
+# splunkforwarder_deployment_server: true
+
+# SPLUNK CLOUD
+# Set if using Splunk Cloud
+# splunkforwarder_cloud_forwarder: true
+splunkforwarder_cloud_credential_file_src: /tmp/splunkclouduf.spl
+splunkforwarder_cloud_credential_file_dest: "{{ splunkforwarder_path }}/etc/splunkclouduf.spl"
 
 # DEFAULT INDEX
 splunkforwarder_default_index: default
