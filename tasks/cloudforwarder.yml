@@ -11,9 +11,9 @@
 
 
 - name: Install Splunk Cloud credentials file
-  shell: "{{ splunkforwarder_path }}/bin/splunk install app {{ splunk_cloud_credential_file_dest }} -auth {{ splunkforwarder_user }}:{{ splunkforwarder_pass }}" -update 1
+  shell: "{{ splunkforwarder_path }}/bin/splunk install app {{ splunk_cloud_credential_file_dest }} -auth {{ splunkforwarder_user }}:{{ splunkforwarder_pass }} -update 1"
   args:
-    chdir: /opt/splunkforwarder
+    chdir: "{{ splunkforwarder_path }}"
   tags: configure
   when: splunk_cloud_forwarder is defined
   notify: restart splunk
