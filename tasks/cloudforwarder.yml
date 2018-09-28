@@ -15,6 +15,6 @@
   args:
     chdir: "{{ splunkforwarder_path }}"
   tags: configure
-  when: splunk_cloud_forwarder is defined
+  when: splunkforwarder_cloud_forwarder is defined
   notify: restart splunk
 
