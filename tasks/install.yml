@@ -77,7 +77,7 @@
     - install
   copy:
     src: splunk_extracted_path.stat.path
-    dest: {{ splunkforwarder_path }}
+    dest: "{{ splunkforwarder_path }}"
   creates: "{{ splunkforwarder_path }}/bin/splunk"
   when: splunk_binary_file.stat.path is search("tgz")
 
