@@ -64,11 +64,21 @@
    - install
   unarchive: 
     src: "/tmp/{{ splunkforwarder_filename }}" 
-    dest: /opt/
+    dest: /tmp
     copy: no
     owner: "{{ splunkforwarder_system_user }}" 
     group: "{{ splunkforwarder_system_user }}" 
-    creates: "{{ splunkforwarder_path }}/bin/splunk"
+  when: splunk_binary_file.stat.path is search("tgz")
+  register: splunk_extracted_path
+
+- name: copy extracted files
+  become: yes
+  tags:
+    - install
+  copy:
+    src: splunk_extracted_path.stat.path
+    dest: {{ splunkforwarder_path }}
+  creates: "{{ splunkforwarder_path }}/bin/splunk"
   when: splunk_binary_file.stat.path is search("tgz")
 
 - name: install splunk rpm
@@ -106,7 +116,7 @@
 - name: accept license and start splunk
   tags:
    - install
-  shell: /opt/splunkforwarder/bin/splunk start --accept-license
+  shell: {{ splunkforwarder_path }}/bin/splunk start --accept-license
   become: yes
   when: splunk_path.stat.exists == false
 
@@ -114,5 +124,5 @@
   become: yes
   tags:
    - install
-  shell: /opt/splunkforwarder/bin/splunk enable boot-start
+  shell: {{ splunkforwarder_path }}/bin/splunk enable boot-start
   when: splunk_path.stat.exists == false and splunkforwarder_start_on_boot
