@@ -5,7 +5,7 @@
    - install
    - security
   copy: 
-    src: "splunk_creds/{{splunk_passwd}}" 
+    src: "splunk_creds/{{splunkforwader_passwd}}" 
     dest: "{{ splunkforwarder_path }}/etc" 
     owner: "{{ splunkforwarder_system_user }}" 
     group: "{{ splunkforwarder_system_user }}" 

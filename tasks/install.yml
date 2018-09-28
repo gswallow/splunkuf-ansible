@@ -27,14 +27,14 @@
     - install
   stat: 
     path: "{{ splunkforwarder_path }}"
-  register: splunk_path
+  register: splunkforwarder_installed_path
 
 - name: splunk is installed
   tags: 
     - install
   debug: 
     msg: "splunk is already installed under {{ splunkforwarder_path }}"
-  when: splunk_path.stat.exists
+  when: splunkforwarder_installed_path.stat.exists
 
 - name: get package via curl
   shell: "curl -sL -o /tmp/{{ splunkforwarder_filename }} '{{ splunkforwarder_url }}'"
@@ -48,7 +48,7 @@
     dest: "/tmp/{{ splunkforwarder_filename }}"
     mode: 0775
     checksum: "{{ splunkforwarder_md5 }}"
-  when: splunk_path.stat.exists == false
+  when: splunkforwarder_installed_path.stat.exists == false
 
 
 - name: checking downloaded file type
@@ -56,7 +56,7 @@
     - install
   stat:
     path: "/tmp/{{ splunkforwarder_filename }}"
-  register: splunk_binary_file
+  register: splunkforwarder_binary_file
 
 - name: extract splunk binary
   become: yes
@@ -68,18 +68,18 @@
     copy: no
     owner: "{{ splunkforwarder_system_user }}" 
     group: "{{ splunkforwarder_system_user }}" 
-  when: splunk_binary_file.stat.path is search("tgz")
-  register: splunk_extracted_path
+  when: splunkforwarder_binary_file.stat.path is search("tgz")
+  register: splunkforwarder_extracted_path
 
 - name: copy extracted files
   become: yes
   tags:
     - install
   copy:
-    src: splunk_extracted_path.stat.path
+    src: splunkforwarder_extracted_path.stat.path
     dest: "{{ splunkforwarder_path }}"
   creates: "{{ splunkforwarder_path }}/bin/splunk"
-  when: splunk_binary_file.stat.path is search("tgz")
+  when: splunkforwarder_binary_file.stat.path is search("tgz")
 
 - name: install splunk rpm
   become: yes
@@ -88,7 +88,7 @@
   yum:
     name: "/tmp/{{ splunkforwarder_filename }}"
     state: latest
-  when: splunk_binary_file.stat.path is search("rpm")
+  when: splunkforwarder_binary_file.stat.path is search("rpm")
 
 - name: ensure etc/system/local directory exists
   file:
@@ -118,11 +118,11 @@
    - install
   shell: "{{ splunkforwarder_path }}/bin/splunk start --accept-license"
   become: yes
-  when: splunk_path.stat.exists == false
+  when: splunkforwarder_installed_path.stat.exists == false
 
 - name: enable boot-start
   become: yes
   tags:
    - install
   shell: "{{ splunkforwarder_path }}/bin/splunk enable boot-start"
-  when: splunk_path.stat.exists == false and splunkforwarder_start_on_boot
+  when: splunkforwarder_installed_path.stat.exists == false and splunkforwarder_start_on_boot
