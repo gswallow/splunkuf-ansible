@@ -69,7 +69,7 @@
     owner: "{{ splunkforwarder_system_user }}" 
     group: "{{ splunkforwarder_system_user }}" 
     creates: "{{ splunkforwarder_path }}/bin/splunk"
-  when: splunk_path.stat.exists == false and splunk_binary_file.stat.path is search("/(t|\.)gz$/")
+  when: splunk_binary_file.stat.path is search("tgz")
 
 - name: install splunk rpm
   become: yes
@@ -78,7 +78,17 @@
   yum:
     name: "/tmp/{{ splunkforwarder_filename }}"
     state: latest
-  when: splunk_binary_file.stat.path is search("/rpm$/")
+  when: splunk_binary_file.stat.path is search("rpm")
+
+- name: ensure etc/system/local directory exists
+  file:
+    path: "{{ splunkforwarder_path }}/etc/system/local"
+    state: directory
+    mode: 0755
+    owner: "{{ splunkforwarder_system_user }}" 
+    group: "{{ splunkforwarder_system_user }}" 
+  tags:
+    - install
 
 - name: create user.seed file
   become: yes
