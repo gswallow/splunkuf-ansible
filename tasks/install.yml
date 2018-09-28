@@ -116,7 +116,7 @@
 - name: accept license and start splunk
   tags:
    - install
-  shell: {{ splunkforwarder_path }}/bin/splunk start --accept-license
+  shell: "{{ splunkforwarder_path }}/bin/splunk start --accept-license"
   become: yes
   when: splunk_path.stat.exists == false
 
@@ -124,5 +124,5 @@
   become: yes
   tags:
    - install
-  shell: {{ splunkforwarder_path }}/bin/splunk enable boot-start
+  shell: "{{ splunkforwarder_path }}/bin/splunk enable boot-start"
   when: splunk_path.stat.exists == false and splunkforwarder_start_on_boot
