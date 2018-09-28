@@ -3,7 +3,7 @@
 # SYSTEM RELATED
 # what user splunk uf should run under
 splunkforwarder_system_user: splunk
-splunkforwarder_path: /opt/splunk
+splunkforwarder_path: /opt/splunkforwarder
 splunkforwarder_start_on_boot: yes
 
 # PACKAGE LOCATION
